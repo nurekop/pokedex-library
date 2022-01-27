@@ -65,6 +65,11 @@ export const Card = styled.div`
 		right: -30px;
 		transform: rotate(35deg);
 	}
+
+	& > img {
+		height: 96px;
+		width: 96px;
+	}
 `;
 
 export const EmptyStateContainer = styled.div`

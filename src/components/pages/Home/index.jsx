@@ -1,14 +1,18 @@
-import React from 'react';
-import PokemonList from './components/PokemonList';
+import React, {Suspense, lazy} from 'react';
+import PokemonLoadingState from './components/PokemonLoadingState';
 import Navbar from '../../common/Navbar';
 
 const Home = () => {
   document.title = 'Pokedex Library';
 
+  const PokemonList = lazy(() => import('./components/PokemonList'))
+
   return (
     <div>
       <Navbar location='home' />
-      <PokemonList />
+      <Suspense fallback={<PokemonLoadingState perpage={8} />}>
+        <PokemonList />
+      </Suspense>
     </div>
   );
 }
