@@ -36,3 +36,16 @@ export const ModalInput = styled.input`
 	width: 90%;
 	border-radius: 0;
 `;
+
+export const ErrorContainer = styled.div`
+	display: flex;
+	justify-content: center;
+
+	& > p {
+		font-size: 0.7em;
+		line-height: 1.5em;
+		color: red;
+		margin: 0;
+		max-width: 300px;
+	}
+`;

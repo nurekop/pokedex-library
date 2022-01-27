@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 
 import { GET_POKEMONS_DETAIL } from '../../../queries';
 import DetailType from './components/DetailType';
@@ -18,10 +18,14 @@ import CatchModal from './components/CatchModal';
 
 const DetailPage = () => {
   const SELECTED_MOVE = 4;
-  const { name } = useParams();
+
+  const history = useHistory();
+
+  const { name, pokemonNickname } = useParams();
   const [isCatched, setIsCatched] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
   const [isFailedCatch, setIsFailedCatch] = useState(false);
+  const [isNicknameExist, setIsNicknameExist] = useState(false);
 
   const dispatch = useDispatch();
   const { catchPokemon, releasePokemon } = bindActionCreators(actionCreators, dispatch);
@@ -50,8 +54,6 @@ const DetailPage = () => {
 
     return moves;
   };
-
-  const ownedPokemon = state.pokemons.filter(pokemon => pokemon.name === name);
   
   const catchEm = () => {
     const gotEm = Math.floor(Math.random() * 10) & 1;
@@ -69,16 +71,24 @@ const DetailPage = () => {
   }
 
   const storePokemon = (nickname) => {
-    catchPokemon({
-      name,
-      nickname,
-      image: data.pokemon.sprites.front_default
-    });
-    setIsCatched(false);
+    const existingNickname = state.pokemons.filter(pokemon => pokemon.nickname === nickname);
+
+    if (existingNickname < 1) {
+      catchPokemon({
+        name,
+        nickname,
+        image: data.pokemon.sprites.front_default
+      });
+      setIsCatched(false);
+      history.push('/my-pokemon');
+    } else {
+      setIsNicknameExist(true);
+    }
   }
 
   const releaseEm = () => {
-    releasePokemon(name);
+    releasePokemon(pokemonNickname);
+    history.push('/my-pokemon');
   }
 
   if (loading) return <LoadingContainer>Loading . . .</LoadingContainer>
@@ -92,6 +102,7 @@ const DetailPage = () => {
             isCatched && 
             <CatchModal 
               name={name}
+              nicknameExist={isNicknameExist}
               onClick={storePokemon}
             />
           }
@@ -103,12 +114,18 @@ const DetailPage = () => {
           }
           <img src={data.pokemon.sprites.front_default} alt={name} />
           <div className={css`text-align: center;`}>
-            <Header1>{name.toUpperCase()}</Header1>
+            <Header1>
+              {
+                pokemonNickname ?
+                  pokemonNickname.toUpperCase() : 
+                  name.toUpperCase()
+              }
+            </Header1>
             <DetailType types={data.pokemon.types} />
+            <CatchButton onClick={catchEm} type='catch' disabled={isDisabled}>CATCH</CatchButton>
             {
-              ownedPokemon.length < 1 ? 
-              <CatchButton onClick={catchEm} type='catch' disabled={isDisabled}>CATCH</CatchButton> : 
-              <CatchButton onClick={releaseEm} type='release'>RELEASE</CatchButton>
+              pokemonNickname && 
+              <CatchButton onClick={releaseEm} type='release' margin-left >RELEASE</CatchButton>
             }
           </div>
         </DetailContainer>

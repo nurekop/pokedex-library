@@ -9,6 +9,9 @@ function App() {
 		<Container>
 			<Router>
 				<Switch>
+					<Route path="/detail/:name/:pokemonNickname">
+						<DetailPage />
+					</Route>
 					<Route path="/detail/:name">
 						<DetailPage />
 					</Route>

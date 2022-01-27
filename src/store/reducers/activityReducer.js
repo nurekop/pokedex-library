@@ -11,7 +11,7 @@ const reducer = (state = initialState, action) => {
 			};
 		case 'release':
 			const filterFavorite = state.pokemons.filter((pokemon) => {
-				return pokemon.name !== action.payload;
+				return pokemon.nickname !== action.payload;
 			});
 			return {
 				...state,
