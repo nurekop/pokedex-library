@@ -21,7 +21,7 @@ const CatchModal = (props) => {
     <ModalContainer>
       <ModalCard>
         <ModalText>Gotcha! {props.name} was caught!</ModalText>
-        <ModalText>Do you want to give a nickname to {props.name}?</ModalText>
+        <ModalText>New words {props.name}?</ModalText>
         <ModalInput ref={inputRef} type="text" maxLength='10' />
         { 
           errorMessage.length > 0 &&
